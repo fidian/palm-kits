@@ -2,7 +2,7 @@
 //   Do not use globals or static variables.
 
 #define NOZLIBDEFS
-#define TABLE_ROWS 5
+#define TABLE_ROWS 10
 #define FILENAME_STATUS_LINE 1
 #define FILE_PROGRESS_LINE 2
 #define OVERALL_STATUS_LINE 4
@@ -159,10 +159,11 @@ UInt8 FillBuffer(decomp_data *dd)
 	return 0;
      }
    
-   hand = DmGetResource('KITd', dd->next_chunk ++);
+   hand = DmGetResource('KITd', dd->next_chunk);
+   dd->next_chunk ++;
    if (! hand)
      {
-	StrIToA(dd->buffer, dd->end_chunk);
+	// StrIToA(dd->buffer, dd->end_chunk);
 	return 1;
      }
    
@@ -194,8 +195,13 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
    UInt8 error;
    float percent;
    UInt32 size_left, bytes;
-   
+   char debug[10];
+
+   Status("Enter ReadProc", 3);
    dd = ddp;
+
+   StrIToA(debug, *size);
+   FrmCustomAlert(A_Debug, "Read OK", "size", debug);
 
    // Loop until we fill the buffer that the Exchange Manager wants,
    // or until we hit an error.
@@ -205,6 +211,7 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
 	// If there are 0 bytes available, see if I can fill the buffer again
 	if (dd->bytes_left == 0)
 	  {
+	     Status("FillBuffer", 3);
 	     error = FillBuffer(dd);
 	     if (error)
 	       {
@@ -213,6 +220,7 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
 	       }
 	  }
 
+	Status("Size Check", 3);
 	if (size_left > dd->bytes_left)
 	  bytes = dd->bytes_left;
 	else
@@ -220,15 +228,25 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
 
 	if (bytes == 0)
 	  {
+	     Status("Early Bail", 3);
+	     StrIToA(dd->buffer, *size);
+	     Status(dd->buffer, 4);
 	     *size = *size - size_left;
 	     return 0;
 	  }
 	
+	Status("MemMove", 3);
 	MemMove(data + (*size - size_left),
 		&(dd->buffer[dd->bytes_total - dd->bytes_left]), bytes);
 	dd->bytes_left -= bytes;
 	size_left -= bytes;
+	Status("While Loop", 3);
      }
+   
+   // We retrieved bytes successfully
+   // Say so
+   StrIToA(debug, dd->bytes_left);
+   FrmCustomAlert(A_Debug, "Read OK", "Bytes left", debug);
 
    // The calculated percentage is not 100% accurate, but it is good enough
    // for what I do with it.  To be 100% accurate, I would need to know
@@ -251,12 +269,15 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
    
    // Divide by the total number of chunks
    percent /= (float) ((dd->end_chunk - dd->start_chunk) + 1);
-   
+
+   Status("Bar1", 3);
    Bar(percent, FILE_PROGRESS_LINE);
  
    percent = dd->next_chunk - 2;
    percent /= (float) dd->last_chunk;
+   Status("Bar2", 3);
    Bar(percent, OVERALL_PROGRESS_LINE);
+   Status("Leaving ReadProc", 3);
 
    return 0;
 }
@@ -296,13 +317,46 @@ void SetObject(LocalID id, Boolean Viewable)
 }
 
 
-void TableDrawFunc(void *tableP, Int16 row, Int16 col, RectanglePtr bounds)
+void ToggleFile(void)
 {
    global_data *g;
+   unsigned short row, col;
+   UInt16 filenum;
+   TableType *table;
+   
+   table = GetObjectPointer(Tbl_FileList);
+   
+   // Determine the row that's selected
+   if (! TblGetSelection(table, &row, &col))
+     {
+	// Weird.
+	TblUnhighlightSelection(table);
+	return;
+     }
+   
+   Get_Prefs(&g);
+   filenum = row + g->FirstRowNumber;
+   g->GlobalData.files[filenum].flags ^= DF_IS_SELECTED;
+   Set_Prefs(g);
+   MemPtrFree(g);
+   
+   // Update table
+   TblUnhighlightSelection(table);
+}
+
+
+void TableDrawFunc(void *tableP, Int16 row, Int16 col, RectanglePtr bounds)
+{
+   FontID oldFont;
+   UInt16 filenum;
+   global_data *g;
+   UInt16 width;
+   char checkstr;
    
    Get_Prefs(&g);
    
-   if (row + g->FirstRowNumber >= g->GlobalData.g.files)
+   filenum = row + g->FirstRowNumber;
+   if (filenum >= g->GlobalData.g.files)
      {
 	TblSetRowSelectable(tableP, row, false);
 	MemPtrFree(g);
@@ -310,9 +364,16 @@ void TableDrawFunc(void *tableP, Int16 row, Int16 col, RectanglePtr bounds)
      }
  
    TblSetRowSelectable(tableP, row, true);
-   g->GlobalData.files[row + g->FirstRowNumber].name[31] = '\0';
-   WriteChars(g->GlobalData.files[row + g->FirstRowNumber].name, 
-	      bounds->topLeft.x, bounds->topLeft.y, 
+   g->GlobalData.files[filenum].name[31] = '\0';
+   oldFont = FntSetFont(symbol11Font);
+   // Since DF_IS_SELECTED is 0x01, this results in 0x00 or 0x01.  Perfect.
+   checkstr = (g->GlobalData.files[filenum].flags & DF_IS_SELECTED);
+   width = FntCharWidth(checkstr);
+   width += FntCharWidth(' ') * 2;
+   WinDrawChars(&checkstr, 1, bounds->topLeft.x, bounds->topLeft.y);
+   FntSetFont(oldFont);
+   WriteChars(g->GlobalData.files[filenum].name, 
+	      bounds->topLeft.x + width, bounds->topLeft.y, 
 	      bounds->extent.x - 2);
    MemPtrFree(g);
 }
@@ -410,6 +471,30 @@ void SetupTable()
 }
 
 
+void SelectAll(Boolean Toggle)
+{
+   global_data *g;
+   UInt16 filenum;
+   
+   Get_Prefs(&g);
+   for (filenum = 0; filenum < g->GlobalData.g.files; filenum ++)
+     {
+	if (Toggle)
+	  g->GlobalData.files[filenum].flags |= DF_IS_SELECTED;
+	else
+	  // Hardcoded 0xFF to match the size of .flags
+	  // Subtracted one to get 0xFE
+	  g->GlobalData.files[filenum].flags &= 0xFE;
+     }
+   
+   Set_Prefs(g);
+   MemPtrFree(g);
+   
+   // Update table
+   UpdateTable(false);
+}
+
+
 Boolean DecompressEventHandler(EventPtr event)
 {
    decomp_data dd;
@@ -457,9 +542,20 @@ Boolean DecompressEventHandler(EventPtr event)
 	     return true;
 	  }
 	
+	// Skip files that are not marked to be extracted
+	if (! (g->GlobalData.files[g->Iteration].flags & DF_IS_SELECTED))
+	  {
+	     g->Iteration ++;
+	     Set_Prefs(g);
+	     MemPtrFree(g);
+	     return true;
+	  }
+	
 	// Draw the name
 	Status(g->GlobalData.files[g->Iteration].name, FILENAME_STATUS_LINE);
-	
+
+	Set_Prefs(g);
+	MemPtrFree(g);
 	// Clear progress bar
 	Status("", FILE_PROGRESS_LINE);
 	Bar(0, FILE_PROGRESS_LINE);
@@ -590,12 +686,25 @@ Boolean MainEventHandler(EventPtr event)
      {
 	id = event->data.ctlEnter.controlID;
 	
+	if (id == B_M_All)
+	  {
+	     SelectAll(1);
+	     return true;
+	  }
+	if (id == B_M_None)
+	  {
+	     SelectAll(0);
+	     return true;
+	  }
 	if (id == B_M_Go)
 	  {
-	     // TODO:  Check for free space
+	     if (! FrmAlert(A_TimeWarning))
+	       {
+		  // TODO:  Check for free space
 	     
-	     // Switch forms and start decompression
-	     FrmGotoForm(F_Decompress);
+		  // Switch forms and start decompression
+		  FrmGotoForm(F_Decompress);
+	       }
 	     return true;
 	  }
      }
@@ -611,6 +720,11 @@ Boolean MainEventHandler(EventPtr event)
 	     Scroll(TABLE_ROWS - 1, true);
 	     return true;
 	  }
+     }
+   if (event->eType == tblSelectEvent)
+     {
+	ToggleFile();
+	return true;
      }
    if (event->eType == sclRepeatEvent)
      {
