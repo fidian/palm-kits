@@ -409,10 +409,10 @@ void Scroll(Int16 Number, Boolean UpdateScrollbar)
    
    if (Number < 0)
      {
-	if (g->FirstRowNumber < - Number)
-	  g->FirstRowNumber = 0;
-	else
+	if (g->FirstRowNumber > Number)
 	  g->FirstRowNumber += Number;
+	else
+	  g->FirstRowNumber = 0;
      }
    else
      {
