@@ -1,5 +1,5 @@
-PHP-PDB - PHP functions to manipulate PalmOS PDB files
-Copyright (C) 2001, Tyler Akins
+Kits - Palm OS software for installing compressed bundles of files
+Copyright (C) 2002-2003, Tyler Akins
 
 
 This library is free software; you can redistribute it and/or modify it
@@ -13,7 +13,7 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
 for more details.
 
 You should have received a copy of the GNU Lesser General Public License
-along with this library [in the doc/COPYING file]; if not, you can view it
+along with this library [in the docs/COPYING file]; if not, you can view it
 online at http://www.gnu.org/copyleft/lesser.html or you can write to
 
    Free Software Foundation, Inc.

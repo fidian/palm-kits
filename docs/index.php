@@ -34,7 +34,7 @@ applications.</li>
 <ul>
 <li>The decompression library is just under 2k of compiled code, which can
 easily be used in your application if you need some tight decompression 
-code.<li>
+code.</li>
 <li>Free to use Kit to bundle your applications.  (GPL)</li>
 <li>Works on 32k chunks of decompressed data at a time for a high
 compression ratio.</li>
