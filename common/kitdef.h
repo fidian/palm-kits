@@ -18,10 +18,12 @@ typedef struct kitglobal_s
   } kitglobals;
 
 // Should I skip the "Files To Decompress" form?
+// NOTE:  The warning about lengthy extraction time will not show up.
 #define GF_DECOMPRESS_AUTOMATICALLY   0x01
 // If decompressing automatically, should it decompress on these other
 // launch codes (besides sysAppLaunchCmdNormalLaunch?
 // NOTE:  These don't work yet...  Fatal Exception.
+// NOTE:  The warning about lengthy extraction time will not show up.
 #define GF_DECOMPRESS_ON_SYNCNOTIFY   0x02
 #define GF_DECOMPRESS_ON_OPENDB       0x04
 // Should I (by default) overwrite or skip duplicate files?
@@ -30,8 +32,9 @@ typedef struct kitglobal_s
 // overwrite/ignore based on GF_DUPLICATE_OVERWRITE?
 #define GF_DUPLICATE_PROMPT_SKIP      0x10
 // Should I display a message when done decompressing?
-#define GF_ALERT_WHEN_DONE            0x20
+#define GF_SKIP_DONE_ALERT            0x20
 // Should the kit self-destruct when done (only on success)?
+// NOTE:  This doesn't work yet...
 #define GF_DELETE_WHEN_DONE           0x40
 // Keep original modification times?
 #define GF_KEEP_TIMES                 0x80
@@ -40,9 +43,12 @@ typedef struct kitdefinition_s
 {
    char name[32];
    UInt8 last_chunk;    // last chunk # this occupies
-   UInt8 reserved1; // padding to 4-byte boundary
-   UInt16 reserved2;
+   UInt8 flags;
+   UInt16 reserved2;    // padding to 4-byte boundary
 } kitdef;
+
+// Is this file selected?
+#define DF_IS_SELECTED                0x01
 
 typedef struct kit_first_rsrc_s
 {

@@ -30,4 +30,4 @@ rip_bytes: rip_bytes.o
 
 
 clean:
-	rm -f *~ *.o rip_bytes
+	rm -f *~ *.o bundle rip_bytes

@@ -28,15 +28,27 @@ kit/Makefile, like this:</p>
 ShowExample("CREATOR_ID = Fid8");
 ?>
 
+<p>It is also in the .rcp file:</p>
+
+<?PHP
+ShowExample("APPLICATION ID ApplicationID \"Fid8\"");
+?>
+
 <p>Before you distribute the application, you must change that to the
 Creator ID that you registered.  Additionally, you will likely not want the
 program called "Kit", so change the line in the Makefile:</p>
 
 <?PHP
-ShowExample("APP_NAME = Kit")
+ShowExample("APP_NAME = Kit");
 ?>
 
-<p>Once you do those two things, it is safe to distribute your
+<p>This is also in the .rcp file:</p>
+
+<?PHP
+ShowExample("APPLICATIONICONNAME ID AppIconNameID \"Kit\"");
+?>
+
+<p>Once you change those things, it is safe to distribute your
 application.</p>
 
 <?PHP

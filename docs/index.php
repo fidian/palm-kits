@@ -34,8 +34,8 @@ applications.</li>
 <ul>
 <li>The decompression library is just under 2k of compiled code, which can
 easily be used in your application if you need some tight decompression 
-code.</li>
-<li>Free to use Kit to bundle your applications.  (GPL)</li>
+code when zlib is not around.</li>
+<li>Free to use Kit to bundle your applications.  Kit is under the GPL.</li>
 <li>Works on 32k chunks of decompressed data at a time for a high
 compression ratio.</li>
 </ul>
@@ -44,11 +44,11 @@ compression ratio.</li>
 
 <ul>
 <li>Add a "Cancel" button to stop decompression.</li>
+<li>A couple flags don't work.</li>
 <li>Most of the Kit flags don't work yet, like decompress on
 HotSync, delete when done, etc.</li>
 <li>Use ZLib if it found (for speed), otherwise use standard decompression
 routines.</li>
-<li>Be able to select which databases to decompress.</li>
 <li>Write Kit Pro (used to create Kits on the Palm)</li>
 </ul>
 

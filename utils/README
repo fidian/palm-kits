@@ -9,6 +9,10 @@ $Id$
 
 
 
+bundle        Creates .bin files for compiling kits instead of making them
+              on a handheld with Kit Pro.  For examples, see the README in
+	      the kit/ directory.
+	      
 check_h       Checks the .h file versus the .rcp file and determines whether
 	      or not to rebuild the .h file (and thus force a recompile of
 	      all files that depend on the .h file).

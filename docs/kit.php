@@ -17,13 +17,12 @@ StandardHeader('Kit');
 from within the program and write them to the handheld.  It does not rely
 upon ZLib for decompression -- the inflate code is built-in.</p>
 
-<p>Kit's user interface is minimal, but will be able to be tweaked in
-various ways.  Right now there isn't a lot working, but you can build a Kit
-(fairly easily) and you can get the files extracted when you run the Kit.
-The future features will include decompressing upon HotSync, self-deletion,
-skipping the main screen that lets you pick files to decompress,
-decompression of only selected files instead of all files, using ZLib if it
-is available, and more.</p>
+<p>Kit's user interface is designed to be simple.  There is a list of files
+that are contained in the Kit, so you can select what you want to extract.
+When ready, one tap will start the decompression.  Many aspects can be
+tweaked with the program -- particular files can be pre-selected to be
+extracted, the selection screen can be entirely bypassed, files can be
+skipped/overwritten automatically, and other prompts can be removed.</p>
 
 <p>Right now, you need to follow these steps in order to build a kit from
 the command line:</p>
@@ -35,6 +34,8 @@ into the kit/bundles directory</li>
 Kit</li>
 <li>Edit the Makefile and change the Creator ID and the Application's
 Name</li>
+<li>Edit the kit.rcp file and change the Creator ID and the Application's
+name.  Also, edit any wording that doesn't suit you.
 <li>'make'</li>
 </ol>
 

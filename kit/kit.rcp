@@ -6,15 +6,12 @@ MENUID M_Menu
 BEGIN
   TITLE "Kit"
 
-  LABEL "Files to extract:" AUTOID AT (1 15) FONT 1
-  TABLE ID Tbl_FileList AT (10 PREVBOTTOM 140 55) ROWS 5 COLUMNS 1 COLUMNWIDTHS 140
+  LABEL "Select files to extract:" AUTOID AT (1 15) FONT 1
+  TABLE ID Tbl_FileList AT (10 PREVBOTTOM 140 110) ROWS 10 COLUMNS 1 COLUMNWIDTHS 140
   SCROLLBAR ID Sb_FileList AT (PREVRIGHT+2 PREVTOP-1 7 PREVHEIGHT+2)
-  
-  LABEL "Before pressing \"Go\", make sure that" AUTOID AT (1 PREVBOTTOM+5)
-  LABEL "you have plenty of power left in your" AUTOID AT (1 PREVBOTTOM)
-  LABEL "batteries and time to spare.  This could" AUTOID AT (1 PREVBOTTOM)
-  LABEL "take a long time." AUTOID AT (1 PREVBOTTOM)
 
+  BUTTON "All" ID B_M_All AT (1 BOTTOM@159 AUTO AUTO)
+  BUTTON "None" ID B_M_None AT (RIGHT@159 BOTTOM@159 AUTO AUTO)
   BUTTON "Go" ID B_M_Go AT (CENTER BOTTOM@159 AUTO AUTO) FONT 2
 END
 
@@ -56,6 +53,17 @@ BEGIN
   BUTTONS "Ready"
 END
 
+
+ALERT ID A_TimeWarning
+WARNING
+BEGIN
+  TITLE "Warning"
+  MESSAGE "Make sure that you have plenty of power left in your " \
+     "batteries and some time to spare.  This could take a long time."
+  BUTTONS "Proceed" "Abort"
+END
+  
+
 ALERT ID A_InvalidKit
 ERROR
 BEGIN
@@ -96,13 +104,13 @@ BEGIN
   BUTTONS "Ok"
 END
 
-ALERT ID A_Debug
-INFORMATION
-BEGIN
-  TITLE "Debug"
-  MESSAGE "1:  ^1\n2:  ^2\n3:  ^3"
-  BUTTONS "Ok"
-END
+//ALERT ID A_Debug
+//INFORMATION
+//BEGIN
+//  TITLE "Debug"
+//  MESSAGE "1:  ^1\n2:  ^2\n3:  ^3"
+//  BUTTONS "Ok"
+//END
 
 ALERT ID A_Overwrite
 CONFIRMATION
@@ -114,11 +122,12 @@ BEGIN
 END
 
 // Strings
-STRING ID S_Creator "Tyler Akins\n"\
-  "10601 Smetana Road, #208\n"\
-  "Minnetonka, MN 55343\n"\
-  "fidian@rumkin.com\n"\
+STRING ID S_Creator "Created by Tyler Akins\n"\
+  "fidian@tiny.net\n"\
   "http://rumkin.com/projects/\n"\
+  "\n"\
+  "Make your own kits:\n"\
+  "http://kits.sourceforge.net/\n"\
   "\n"\
   "Developed using Linux!"
 STRING ID S_WhatIsAKit "A kit is a self-extracting archive that can " \
@@ -130,7 +139,7 @@ STRING ID S_WhatIsAKit "A kit is a self-extracting archive that can " \
 ICON "icon.bmp"
 SMALLICON "icon2.bmp"
 
-VERSION ID Version1 "0.1"
+VERSION ID Version1 "0.2"
 
 APPLICATION ID ApplicationID "Fid8"
 

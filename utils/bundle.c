@@ -70,6 +70,8 @@ int main(int argc, char **argv)
    char filename[32];
    size_t size;
    unsigned char Data[32768];
+   unsigned int file_flags;
+   
    // Worst case scenario: the data is stored, adding 5 bytes.
    start_arg_at = 1;
    while (start_arg_at < argc && strcmp(argv[start_arg_at], "-v") == 0)
@@ -103,7 +105,7 @@ int main(int argc, char **argv)
    fputc(i, hdr_rsrc);
    // Now the number of files
    fputc(argc - start_arg_at, hdr_rsrc);
-   // And a couple bytes for the ZLibRef
+   // And a couple bytes to spare
    fputc(0, hdr_rsrc);
    fputc(0, hdr_rsrc);
 
@@ -111,7 +113,17 @@ int main(int argc, char **argv)
    // Process each of the files
    for (i = start_arg_at; i < argc; i ++)
      {
+	file_flags = 0x01;
 	fp = fopen(argv[i], "rb");
+	
+	// If the file name starts with a '-', remove the '-' and set the
+	// flags to not select this file automatically for decompression
+	if (! fp && argv[i][0] == '-')
+	  {
+	     fp = fopen(&(argv[i][1]), "rb");
+	     file_flags = 0x00;
+	  }
+	
 	if (! fp)
 	  {
 	     fprintf(stderr, "Problem opening file %s\n", argv[i]);
@@ -142,7 +154,7 @@ int main(int argc, char **argv)
 	  }
 	
 	fputc(chunk, hdr_rsrc);
-	fputc(0, hdr_rsrc);
+	fputc(file_flags, hdr_rsrc);
 	fputc(0, hdr_rsrc);
 	fputc(0, hdr_rsrc);
 	

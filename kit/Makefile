@@ -9,11 +9,11 @@
 
 # Set this to the proper Creator ID.  More information about this in the
 # documentation
-CREATOR_ID = Fid8
+CREATOR_ID = Fid2
 
 # Set this to be the application's name.  More information about this in the
 # documentation
-APP_NAME = Kit
+APP_NAME = D&D Installer
 
 # DEBUG = -mdebug-labels -g
 DEFINES = -DUSE_ZLIB_STRUCT

@@ -20,6 +20,7 @@ and they will be inserted properly during the compilation process.
 
         [Copy *.prc and *.pdb files into the bundles/ directory]
 	[Edit the Makefile and change the Creator ID and Application Name]
+	[Edit the kit.rcp file and change Creator ID, App Name, and wording]
 	make clean
 	make
 
@@ -35,4 +36,16 @@ FLAGS = The integer value of the flags defined in ../common/kitdef.h
 
 FileX = The .prc, .pdb, or .pqa file you want bundled.  Do not include files
 other than native Palm OS binaries!  Don't go including your favorite .txt
-file, for instance.  (First file is required, rest are optional)
+file, for instance.  If the file doesn't exist and the name starts with a
+'-', the '-' will be removed and the file will be marked as an unselected
+file.  This will let you define a list of files you want to install and ones
+that are optional, and can be checked to install them.  See example below.
+(First file is required, rest are optional)
+
+Example:  Auto install, prompts for overwrite, prompts when done, only 1 file
+    ./bundle 1 your_file.prc
+    
+Example:  No flags, prompts for overwrite, prompts when done, first file
+is selected, second file is not selected automatically in the list.  Make
+sure the second file is really named "optional.pdb" (without the hyphen).
+    ./bundle 1 install.pdb -optional.pdb

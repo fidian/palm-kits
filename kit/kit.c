@@ -3,6 +3,7 @@
 
 #define NOZLIBDEFS
 #define TABLE_ROWS 10
+
 #define FILENAME_STATUS_LINE 1
 #define FILE_PROGRESS_LINE 2
 #define OVERALL_STATUS_LINE 4
@@ -11,7 +12,7 @@
 #define WORKING_STATUS_LINE 7
 #define WORKING_DECOMPRESSING "Decompressing"
 #define WORKING_WORKING "Working"
-#define PLEASE_WAIT_MESSAGE "Please wait ...  Loading files."
+#define PLEASE_WAIT_MESSAGE "Loading files ..."
 #define PLEASE_WAIT_LINE 5
 
 #define GLOBAL_DATA 0
@@ -60,6 +61,7 @@ void Get_Prefs(global_data **g)
    // Read real preferences
    size = pref_size;
    *g = MemPtrNew(size);
+   
    // This should never go wrong, hence no error checking.
    PrefGetAppPreferences(CREATOR_ID, 0, *g, &size, false);
 }
@@ -153,7 +155,7 @@ UInt8 FillBuffer(decomp_data *dd)
    
    // Check if there is another chunk I can decompress
    // The Exchange Manager slurps in all remaining data into one
-   // final record.
+   // final record, so this check needs to be here
    if (dd->next_chunk > dd->end_chunk)
      {
 	return 0;
@@ -163,7 +165,6 @@ UInt8 FillBuffer(decomp_data *dd)
    dd->next_chunk ++;
    if (! hand)
      {
-	// StrIToA(dd->buffer, dd->end_chunk);
 	return 1;
      }
    
@@ -195,23 +196,18 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
    UInt8 error;
    float percent;
    UInt32 size_left, bytes;
-   char debug[10];
 
-   Status("Enter ReadProc", 3);
    dd = ddp;
 
-   StrIToA(debug, *size);
-   FrmCustomAlert(A_Debug, "Read OK", "size", debug);
-
    // Loop until we fill the buffer that the Exchange Manager wants,
-   // or until we hit an error.
+   // or until we hit an error.  Do not return less than what the Exchange
+   // Manager wants unless we have to (end of file).
    size_left = *size;
    while (size_left)
      {
 	// If there are 0 bytes available, see if I can fill the buffer again
 	if (dd->bytes_left == 0)
 	  {
-	     Status("FillBuffer", 3);
 	     error = FillBuffer(dd);
 	     if (error)
 	       {
@@ -220,33 +216,24 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
 	       }
 	  }
 
-	Status("Size Check", 3);
 	if (size_left > dd->bytes_left)
 	  bytes = dd->bytes_left;
 	else
 	  bytes = size_left;
 
+	// Ran out of data -- This signifies end of file
 	if (bytes == 0)
 	  {
-	     Status("Early Bail", 3);
-	     StrIToA(dd->buffer, *size);
-	     Status(dd->buffer, 4);
 	     *size = *size - size_left;
 	     return 0;
 	  }
 	
-	Status("MemMove", 3);
 	MemMove(data + (*size - size_left),
 		&(dd->buffer[dd->bytes_total - dd->bytes_left]), bytes);
 	dd->bytes_left -= bytes;
 	size_left -= bytes;
-	Status("While Loop", 3);
      }
    
-   // We retrieved bytes successfully
-   // Say so
-   StrIToA(debug, dd->bytes_left);
-   FrmCustomAlert(A_Debug, "Read OK", "Bytes left", debug);
 
    // The calculated percentage is not 100% accurate, but it is good enough
    // for what I do with it.  To be 100% accurate, I would need to know
@@ -258,7 +245,7 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
    // rest of the chunks in the file.
    // 
    // I just picked this method because it was easy and it didn't require
-   // a lot of work.
+   // a lot of work.  Sometimes a little inaccuracy saves a ton of code.
    
    // Percentage of this chunk [0.0 - 1.0]
    percent = dd->bytes_total - dd->bytes_left;
@@ -270,14 +257,11 @@ Err ReadProc(void *data, UInt32 *size, void *ddp)
    // Divide by the total number of chunks
    percent /= (float) ((dd->end_chunk - dd->start_chunk) + 1);
 
-   Status("Bar1", 3);
    Bar(percent, FILE_PROGRESS_LINE);
  
    percent = dd->next_chunk - 2;
    percent /= (float) dd->last_chunk;
-   Status("Bar2", 3);
    Bar(percent, OVERALL_PROGRESS_LINE);
-   Status("Leaving ReadProc", 3);
 
    return 0;
 }
@@ -329,7 +313,8 @@ void ToggleFile(void)
    // Determine the row that's selected
    if (! TblGetSelection(table, &row, &col))
      {
-	// Weird.
+	// Weird.  We should not have entered this function unless
+	// there was a selection.
 	TblUnhighlightSelection(table);
 	return;
      }
@@ -366,6 +351,7 @@ void TableDrawFunc(void *tableP, Int16 row, Int16 col, RectanglePtr bounds)
    TblSetRowSelectable(tableP, row, true);
    g->GlobalData.files[filenum].name[31] = '\0';
    oldFont = FntSetFont(symbol11Font);
+   
    // Since DF_IS_SELECTED is 0x01, this results in 0x00 or 0x01.  Perfect.
    checkstr = (g->GlobalData.files[filenum].flags & DF_IS_SELECTED);
    width = FntCharWidth(checkstr);
@@ -532,7 +518,7 @@ Boolean DecompressEventHandler(EventPtr event)
 	if (g->Iteration >= g->GlobalData.g.files)
 	  {
 	     // Done
-	     if (g->GlobalData.g.flags & GF_ALERT_WHEN_DONE || 1)
+	     if (! (g->GlobalData.g.flags & GF_SKIP_DONE_ALERT))
 	       FrmAlert(A_Done);
 	     
 	     g->Timeout = -1;
@@ -554,8 +540,6 @@ Boolean DecompressEventHandler(EventPtr event)
 	// Draw the name
 	Status(g->GlobalData.files[g->Iteration].name, FILENAME_STATUS_LINE);
 
-	Set_Prefs(g);
-	MemPtrFree(g);
 	// Clear progress bar
 	Status("", FILE_PROGRESS_LINE);
 	Bar(0, FILE_PROGRESS_LINE);
@@ -614,22 +598,6 @@ Boolean DecompressEventHandler(EventPtr event)
 			       0, &needReset, keep_times);
 	     if (error || dd.bytes_left || dd.next_chunk <= dd.end_chunk)
 	       {
-		  // ERROR
-		  process = 1;
-		  if (error)
-		    {
-		       Status("error", process ++);
-		       StrIToA(dd.buffer, error);
-		       Status(dd.buffer, process ++);
-		    }
-		  if (dd.bytes_left)
-		    {
-		       Status("bytes left", process ++);
-		    }
-		  if (dd.next_chunk <= dd.end_chunk)
-		    {
-		       Status("chunk", process ++);
-		    }
 		  FrmAlert(A_DecompressProblem);
 		  PressLauncherButton();
 		  g->Timeout = -1;
@@ -663,7 +631,6 @@ Boolean MainEventHandler(EventPtr event)
      {
 	FrmDrawForm(FrmGetActiveForm());
 	SetupTable();
-	// TODO:  Draw border around table
 	UpdateTable(true);
 	return true;
      }
@@ -700,8 +667,6 @@ Boolean MainEventHandler(EventPtr event)
 	  {
 	     if (! FrmAlert(A_TimeWarning))
 	       {
-		  // TODO:  Check for free space
-	     
 		  // Switch forms and start decompression
 		  FrmGotoForm(F_Decompress);
 	       }
@@ -741,10 +706,7 @@ Boolean MainEventHandler(EventPtr event)
 void FormLoadEvent(EventPtr event)
 {
    int formID;
-
-   //short err;
    FormPtr form;
-   //EventType event;
    
    formID = event->data.frmLoad.formID;
    form = FrmInitForm(formID);
@@ -770,7 +732,6 @@ static void EventLoop(void)
    
    do
     {
-       // Wait indefinitely for an event
        Get_Prefs(&g);
        EvtGetEvent(&event, g->Timeout);
        MemPtrFree(g);
@@ -792,28 +753,14 @@ static void EventLoop(void)
 
 UInt32 StartApplication(void)
 {
-   /*
-   Err error;
-   
-   error = SysLibFind("Z.lib", &ZLibRef);
-   if (error)
-     error = SysLibLoad('libr', 'ZLib', &ZLibRef);
-   
-   if (error)
-     {
-	ZLibRef = 0;
-     }
+   global_data *g;
+
+   Get_Prefs(&g);
+   if (g->GlobalData.g.flags & GF_DECOMPRESS_AUTOMATICALLY)
+     FrmGotoForm(F_Decompress);
    else
-     {
-	error = ZLibOpen(ZLibRef);
-	if (error)
-	  {
-	     ZLibRef = 0;
-	  }
-     }
-    */
-   
-   FrmGotoForm(F_Main);
+     FrmGotoForm(F_Main);
+   MemPtrFree(g);
    
    return 0;
 }
@@ -821,25 +768,7 @@ UInt32 StartApplication(void)
 
 void StopApplication()
 {
-   /*
-   UInt16 usecount;
-   Err error;
-    */
-   
    FrmCloseAllForms();
-
-   /*
-   if (ZLibRef)
-     {
-	error = ZLibClose(ZLibRef, &usecount);
-	// TODO:  Maybe add error handling if I can't close ZLib?
-	// But why bother?  I'm just closing the program anyway.
-	if (! error && usecount == 0)
-	  {
-	     SysLibRemove(ZLibRef);
-	  }
-     }
-    */
 }
 
 
@@ -911,9 +840,11 @@ UInt32 PilotMain(UInt16 cmd, void *cmdPBP, UInt16 launchFlags)
 	// Close any open forms -- a frmCloseForm event doesn't arrive
 	// if there are open forms.
 	StopApplication();
+	
+	return 0;
      }
-   else
-     MemPtrFree(g);
+   
+   MemPtrFree(g);
 
    // Delete the preferences
    PrefSetAppPreferences(CREATOR_ID, 0, 0, NULL, 0, false);

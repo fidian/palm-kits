@@ -17,4 +17,10 @@ ZLib is at http://www.gzip.org/zlib/
 ZLib was written by Greg Roelofs and maintained by Jean-loup Gailly
 Palmzlib is a minimalists patch to ZLib to get it to compile for Palm OS
 Palmzlib is at http://palmzlib.sourceforge.net/
-Both ZLib and Palmzlib are under the ZLib license
+zlib ARMlet port is at http://www.copera.com/zlib-armlet/
+The ARMlet runs on OS5 handhelds at a significant speed increase.  It still
+runs on pre-OS5, and it is a tiny bit faster there too.
+ZLib and both Palmzlibs are under the ZLib license
+
+I use the includes from the original Palmzlib distro, but I like the library
+from the ARMlet port.

@@ -27,7 +27,8 @@ from which I altered into the inflate routines used in Kit.</li>
 <li>Zerucha, Tom &lt;<?PHP HideEmail('tz', 'execpc') ?>&gt; -- Wrote 
 <a href="http://palmzlib.sourceforge.net/">palmzlib</a> and
 <a href="http://palmboxer.sourceforge.net/">boxer / ZBoxZ</a>.  He initially
-wrote crater, which was excactly what I needed, but relied upon ZLib.</li>
+wrote crater, which was excactly what I needed to base Kit off of, but it
+did not compress databases.  So I took the idea and started from scratch.</li>
 </ul>
 
 <?PHP
