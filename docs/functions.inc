@@ -41,9 +41,9 @@ function StandardHeader($title = '', $curdir = '') {
        <a href="download.php">Download</a><br>
        <a href="http://sourceforge.net/projects/kits/">
           Project&nbsp;Page</a><br>
-       <a href="http://sourceforge.net/mail/?group_id=29740">
+       <a href="http://sourceforge.net/mail/?group_id=80907">
           Mailing&nbsp;Lists</a><br>
-       <a href="http://sourceforge.net/tracker/?atid=397207&group_id=29740&func=browse">
+       <a href="http://sourceforge.net/tracker/?atid=561379&group_id=80907&func=browse">
           Bug&nbsp;Reporting</a><br>
     </td></tr>
   </table>

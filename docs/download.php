@@ -18,7 +18,7 @@ StandardHeader('Download PHP-PDB');
 <p>Whenever the code feels mature enough for release, a new package is
 created.  Feel free to download the latest version (in .zip, .tar.bz2, or
 .tar.gz formats) from Kit's
-<a href="http://sourceforge.net/project/showfiles.php?group_id=29740">
+<a href="http://sourceforge.net/project/showfiles.php?group_id=80907">
 download page</a> on SourceForge.</p>
 
 <h3>CVS version</h3>
@@ -32,7 +32,7 @@ as a standard release.</p>
 
 <p>If you are like me and you can't wait for all of the latest and greatest
 coded goodness, you can fire up your CVS program with the
-<a href="http://sourceforge.net/cvs/?group_id=29740">instructions</a> that
+<a href="http://sourceforge.net/cvs/?group_id=80907">instructions</a> that
 SourceForge provides.  (The module name is <tt>kits</tt>.)</p>
 
 <h3>Nightly tarballs</h3>
@@ -53,29 +53,13 @@ php-pdb-cvs.tar.gz</a></li>
 php-pdb-cvs.zip</a></li>
 </ul>
 
-<?PHP if (0) { ?>
-<h3>Other downloads</h3>
-
-<p>Christoph Barth has created a patch for <a
-href="http://www.moregroupware.org/">moregroupware</a> to allow exporting
-your calendar to a Palm.<br>
-[ <a href="tools/mgw_palm_pdb_patch.tar.gz">patch</a> | 
-<a href="tools/mgw_palm_pdb_patch.txt">readme</a> ]</p>
-
-<p>A simple address book editor, named Spade, was created by roman.  It is
-just beginning, but looks like it has enough potential, especially if you
-use coldsync or something else to synchronize databases.<br>
-[ <a href="samples/spade.php">download/readme/demo</a> ]</p>
-<?PHP } ?>
-
-
 <h3>Old versions</h3>
 
 <p>If you have CVS, you can get old versions.  Just read the CVS man page or
 documentation.  If you don't, or if you just want official releases, I have
 a few of the older versions available for download from SourceForge.  Just 
 head on over to the 
-<a href="http://sourceforge.net/project/showfiles.php?group_id=29740">
+<a href="http://sourceforge.net/project/showfiles.php?group_id=80907">
 download page</a> and pick whatever ancient version you want.  If you want
 ones that are even older, just let me know and I'll give you packages back
 to the beginning of time.</p>

@@ -18,8 +18,9 @@ StandardHeader('Gunzip');
 <a href="http://www.cs.tut.fi/~albert/Dev/gunzip/gunzip.c">gunzip.c</a>
 on his <a href="http://www.cs.tut.fi/~albert/Dev/gunzip/">Gzip Decompressor
 for C64</a> page.  This code was heavily modified primarily for size, and
-partially for performance.  It is now in Kit as gunzip/inflate.c.  A list 
-of the types of changes made to the original code is below.</p>
+partially for performance.  It is now in Kit as <a 
+href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/kits/kits/gunzip/inflate.c?rev=HEAD&content-type=text/vnd.viewcvs-markup">gunzip/inflate.c</a>.
+A list of the types of changes made to the original code is below.</p>
 
 <ul>
 <li>Removed bit reverse table in favor for a bit-shifting technique</li>
