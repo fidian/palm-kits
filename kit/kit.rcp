@@ -1,0 +1,137 @@
+#include "kit.h"
+
+FORM ID F_Main AT (0 0 160 160)
+NOFRAME
+MENUID M_Menu
+BEGIN
+  TITLE "Kit"
+
+  LABEL "Files to extract:" AUTOID AT (1 15) FONT 1
+  TABLE ID Tbl_FileList AT (10 PREVBOTTOM 140 55) ROWS 5 COLUMNS 1 COLUMNWIDTHS 140
+  SCROLLBAR ID Sb_FileList AT (PREVRIGHT+2 PREVTOP-1 7 PREVHEIGHT+2)
+  
+  LABEL "Before pressing \"Go\", make sure that" AUTOID AT (1 PREVBOTTOM+5)
+  LABEL "you have plenty of power left in your" AUTOID AT (1 PREVBOTTOM)
+  LABEL "batteries and time to spare.  This could" AUTOID AT (1 PREVBOTTOM)
+  LABEL "take a long time." AUTOID AT (1 PREVBOTTOM)
+
+  BUTTON "Go" ID B_M_Go AT (CENTER BOTTOM@159 AUTO AUTO) FONT 2
+END
+
+FORM ID F_Decompress AT (0 0 160 160)
+NOFRAME
+MODAL
+BEGIN
+  TITLE "Decompressing"
+END
+
+MENU ID M_Menu
+BEGIN
+  PULLDOWN "Kit"
+  BEGIN
+    MENUITEM "What is a Kit?   " ID M_M_WhatIs "w"
+    MENUITEM "About Kit        " ID M_M_About "a"
+  END
+END
+
+ALERT ID A_Version
+ HELPID S_Creator
+INFORMATION
+BEGIN
+  TITLE "About Kit"
+  MESSAGE "Kit Tester\n" \
+          "Version ^1\n" \
+          "Compiled on ^2\n" \
+          "\n" \
+          "Tap the 'i' for developer information."
+  BUTTONS "Ok" 
+END
+
+ALERT ID A_RomIncompatible
+ERROR
+BEGIN
+  TITLE "Outdated ROM"
+  MESSAGE "Sorry, but Kits only run with PalmOS version 2.0 or higher.  " \
+          "For safety, I will jump you back to your applications screen."
+  BUTTONS "Ready"
+END
+
+ALERT ID A_InvalidKit
+ERROR
+BEGIN
+  TITLE "Invalid Kit"
+  MESSAGE "This kit is corrupt.  There is no resource 0."
+  BUTTONS "Abort Procedure"
+END
+
+ALERT ID A_NoMemory
+ERROR
+BEGIN
+  TITLE "Out of Memory"
+  MESSAGE "There is not enough memory available."
+  BUTTONS "Abort Procedure"
+END
+
+ALERT ID A_DecompressProblem
+ERROR
+BEGIN
+  TITLE "Decompression Problem"
+  MESSAGE "There was a problem encountered during decompression."
+  BUTTONS "Abort Procedure"
+END
+
+ALERT ID A_Cancelled
+ERROR
+BEGIN
+  TITLE "Cancelled"
+  MESSAGE "Decompression was aborted."
+  BUTTONS "Ok"
+END
+
+ALERT ID A_Done
+INFORMATION
+BEGIN
+  TITLE "Done"
+  MESSAGE "Decompression successful!"
+  BUTTONS "Ok"
+END
+
+ALERT ID A_Debug
+INFORMATION
+BEGIN
+  TITLE "Debug"
+  MESSAGE "1:  ^1\n2:  ^2\n3:  ^3"
+  BUTTONS "Ok"
+END
+
+ALERT ID A_Overwrite
+CONFIRMATION
+DEFAULTBUTTON 1
+BEGIN
+  TITLE "Confirm Overwrite"
+  MESSAGE "^1 already exists.  Should I overwrite it?"
+  BUTTONS "Yes" "No"
+END
+
+// Strings
+STRING ID S_Creator "Tyler Akins\n"\
+  "10601 Smetana Road, #208\n"\
+  "Minnetonka, MN 55343\n"\
+  "fidian@rumkin.com\n"\
+  "http://rumkin.com/projects/\n"\
+  "\n"\
+  "Developed using Linux!"
+STRING ID S_WhatIsAKit "A kit is a self-extracting archive that can " \
+  "contain multiple databases and programs.  It is faster to transfer " \
+  "because it will likely have less records than the original, and the " \
+  "compression also helps keep sizes to a minimum."
+
+// Bitmaps and Icons
+ICON "icon.bmp"
+SMALLICON "icon2.bmp"
+
+VERSION ID Version1 "0.1"
+
+APPLICATION ID ApplicationID "Fid8"
+
+APPLICATIONICONNAME ID AppIconNameID "Kit"

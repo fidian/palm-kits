@@ -1,0 +1,38 @@
+Documentation for Kit
+
+Copyright (C) 2002-2003 - Kit development team
+Licensed under the GNU GPL software license.
+See the docs/LEGAL file for more information
+See http://kits.sourceforge.net/ for more information about the library
+
+$Id$
+
+
+
+To make the stand-alone Kit program without bundled data (required for Kit
+Pro), follow these steps:
+
+	make clean
+	make kit_only
+	
+To make a kit outside of Kit Pro, you can generate the required .bin files
+and they will be inserted properly during the compilation process.
+
+        [Copy *.prc and *.pdb files into the bundles/ directory]
+	[Edit the Makefile and change the Creator ID and Application Name]
+	make clean
+	make
+
+Inside the Makefile, the target 'kit.prc' will use the bundle program
+automatically.  The bundle program takes these parameters:
+
+	./bundle [-v] <FLAGS> <File1 [File2 [...]]>
+	
+-v = Verbose mode (optional)
+
+FLAGS = The integer value of the flags defined in ../common/kitdef.h
+(Required)
+
+FileX = The .prc, .pdb, or .pqa file you want bundled.  Do not include files
+other than native Palm OS binaries!  Don't go including your favorite .txt
+file, for instance.  (First file is required, rest are optional)

@@ -1,0 +1,74 @@
+// KitTest Resource File
+//
+// Copyright (C) 2002-2003 - Kit development team
+// Licensed under the GNU GPL software license.
+// See the docs/LEGAL file for more information
+// See http://kits.sourceforge.net/ for more information about the library
+//
+// $Id$
+
+#include "kittest.h"
+
+FORM ID F_Main AT (0 0 160 160)
+NOFRAME
+MENUID M_Menu
+BEGIN
+  TITLE "Kit"
+
+  BUTTON "Go" ID B_M_Go AT (CENTER BOTTOM@159 AUTO AUTO) FONT 2
+END
+
+MENU ID M_Menu
+BEGIN
+  PULLDOWN "Kit"
+  BEGIN
+    MENUITEM "What is a Kit?   " ID M_M_WhatIs "w"
+    MENUITEM "About Kit        " ID M_M_About "a"
+  END
+END
+
+ALERT ID A_Version
+ HELPID S_Creator
+INFORMATION
+BEGIN
+  TITLE "About Kit"
+  MESSAGE "Kit Tester\n" \
+          "Version ^1\n" \
+          "Compiled on ^2\n" \
+          "\n" \
+          "Tap the 'i' for developer information."
+  BUTTONS "Ok" 
+END
+
+ALERT ID A_RomIncompatible
+ERROR
+BEGIN
+  TITLE "Outdated ROM"
+  MESSAGE "Sorry, but Kits only run with PalmOS version 2.0 or higher.  " \
+          "For safety, I will jump you back to your applications screen."
+  BUTTONS "Drat"
+END
+
+
+// Strings
+STRING ID S_Creator "Tyler Akins\n"\
+  "10601 Smetana Road, #208\n"\
+  "Minnetonka, MN 55343\n"\
+  "fidian@rumkin.com\n"\
+  "http://rumkin.com/projects/\n"\
+  "\n"\
+  "Developed using Linux!"
+STRING ID S_WhatIsAKit "A kit is a self-extracting archive that can " \
+  "contain multiple databases and programs.  It is faster to transfer " \
+  "because it will likely have less records than the original, and the " \
+  "compression also helps keep sizes to a minimum."
+
+// Bitmaps and Icons
+ICON "icon.bmp"
+SMALLICON "icon2.bmp"
+
+VERSION ID Version1 "0.1"
+
+APPLICATION ID ApplicationID "Fid8"
+
+APPLICATIONICONNAME ID AppIconNameID "Kit Tester"

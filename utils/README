@@ -1,0 +1,25 @@
+Documentation for utilities used to make Kits
+
+Copyright (C) 2002-2003 - Kit development team
+Licensed under the GNU GPL software license.
+See the docs/LEGAL file for more information
+See http://kits.sourceforge.net/ for more information about the library
+
+$Id$
+
+
+
+check_h       Checks the .h file versus the .rcp file and determines whether
+	      or not to rebuild the .h file (and thus force a recompile of
+	      all files that depend on the .h file).
+	      eg.  check_h basename
+
+gen_id.pl     Generates a .h file for the IDs in the .rcp file.
+	      eg.  gen_id.pl < basename.rcp > basename.h
+
+gen_version   Generates a version.h file
+	      eg.  gen_version basename > version.h
+
+rip_bytes     Given a file, removes the gzip header and footer and dumps the
+	      stream of deflated data to stdout.
+	      eg.  rip_bytes filename.gz > filename.deflate_stream

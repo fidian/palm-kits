@@ -1,0 +1,49 @@
+The inflate routines are about 1/3 the speed of ZLib, consume only an extra
+couple k of memory in the program, and don't require any extra memory for
+decompression beyond the input and output buffers.  It also can only
+decompress items in memory -- you must allocate all of the input and output
+buffers ahead of time.  The inflate routines should be platform-independent, 
+just like the CRC32 routines.
+
+This directory makes only sample programs in order to test the decompression
+code.  The decompression code is compiled separately for the apps that use
+it, like Kit.
+
+
+data.deflated 	    Just the deflated data (no gzip extra stuff) for testing
+		    with just_inflate.  Made with one of the files in the
+		    ../utils directory.
+		    
+data.gz		    Source for data.deflated
+
+dynamic.gz	    Sample gzipped data that was decompressed using the
+fixed.gz	    specified method.
+stored.gz
+
+gunzip	 	    Test the inflate & CRC routines with the specified file
+		    eg.  gunzip dynamic.gz
+		    The .gz file must decompress to less than 6k
+		    
+just_inflate	    Test the inflate routine on just some deflated data
+		    that doesn't contain the gzip header and footer.
+		    eg.  just_inflate data.deflated
+		    
+make_tests.c	    This will compile into make_tests fairly easily (it is
+		    not in the Makefile).  The program generates the test
+		    files for dynamic, fixed, and stored data.  It is what
+		    generated test_?.gz.
+
+The gunzip program in this directory does not actually inflate the file
+specified on the command line.  It just tries to decompress the file and
+checks the resulting size and CRC versus the desired size and CRC as stated
+in the .gz file.  A sample output:
+
+data.gz
+CRC:  ff4670ef ff4670ef
+Size: 00007cc6 00007cc6
+
+This means that the CRC and size match what was expected, so the inflate
+algorithm works.
+
+just_inflate works on merely deflated data.  I included some sample data:
+data.deflated.  If everything works, you should not see any messages.

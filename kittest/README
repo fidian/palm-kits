@@ -1,0 +1,18 @@
+Documentation for KitTest
+
+Copyright (C) 2002-2003 - Kit development team
+Licensed under the GNU GPL software license.
+See the docs/LEGAL file for more information
+See http://kits.sourceforge.net/ for more information about the library
+
+$Id$
+
+
+
+Kittest is compiled with USE_ZLIB_STRUCT so that the gunzip source includes
+SysZLib.h instead of making its own struct.  This is so that I can reuse the
+ZLib struct in the decompression to compare it to the tiny inflate routines.
+
+Inside kittest.c is the define for the number of seconds per test, and which
+tests to skip.  If you skip both tests, then there is a loop test where
+inflate is called three times.  This works great for profiling on POSE.

@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Check an .h file to see if it changed
+#
+# Copyright (C) 2002-2003 - Kit development team
+# Licensed under the GNU GPL software license.
+# See the docs/LEGAL file for more information
+# See http://kits.sourceforge.net/ for more information about the library
+#
+# $Id$
+
+BASENAME=$1
+
+if [ "x$BASENAME" == "x" ]; then {
+   echo "Specify basename of .h file to use."
+   exit;
+}; fi
+
+if ( ! diff ${BASENAME}.h ${BASENAME}.h_new > /dev/null ); then {
+   echo "${BASENAME}.h changed (updating ${BASENAME}.h file)"
+   cp ${BASENAME}.h_new ${BASENAME}.h;
+}; else {
+   echo "${BASENAME}.h did not change (changing date on ${BASENAME}.rcp)"
+   touch -r ${BASENAME}.h ${BASENAME}.rcp
+}; fi;
+
+rm ${BASENAME}.h_new

@@ -1,0 +1,157 @@
+<?PHP
+/* Documentation for Kits
+ *
+ * Copyright (C) 2002-2003 - Kit development team
+ * Licensed under the GNU GPL software license.
+ * See the docs/LEGAL file for more information
+ * See http://kits.sourceforge.net/ for more information about the library
+ */
+
+function StandardHeader($title = '', $curdir = '') {
+   $newTitle = "Kits";
+   
+   if ($title != '')
+      $newTitle .= ': ' . $title;
+    
+   $TH_Color = '#AFAFDF';
+
+?><HTML><HEAD><TITLE><?PHP echo $newTitle ?></TITLE></HEAD>
+<body bgcolor=#FFFFFF text=#000000>
+<h1 align=center><?PHP echo $newTitle ?></h1>
+  <table border=0 cellpadding=5 cellspacing=0 bgcolor="#BFBFEF" align=right>
+    <tr><td>
+      <a href="index.php">Summary</a>
+    </td></tr>
+    <tr><th bgcolor="<?PHP echo $TH_Color ?>">Programs</th></tr>
+    <tr><td>
+      <a href="kit.php">Kit (Decompress)</a><br>
+      <a href="kitpro.php">KitPro (Compress)</a><br>
+      <a href="kitweb.php">KitWeb (Compress)</a><br>
+      <a href="kittest.php">KitTest</a><br>
+      <a href="gunzip.php">Gunzip</a><br>
+      <a href="credits.php">Credits</a>
+    </td></tr>
+    <tr><th bgcolor="<?PHP echo $TH_Color ?>">More Info</th></tr>
+    <tr><td>
+       <a href="faq.php">FAQ</a><br>
+       <a href="creatorid.php">Creator IDs</a><br>
+    </td></tr>
+    <tr><th bgcolor="<?PHP echo $TH_Color ?>">SourceForge</th></tr>
+    <tr><td>
+       <a href="download.php">Download</a><br>
+       <a href="http://sourceforge.net/projects/kits/">
+          Project&nbsp;Page</a><br>
+       <a href="http://sourceforge.net/mail/?group_id=29740">
+          Mailing&nbsp;Lists</a><br>
+       <a href="http://sourceforge.net/tracker/?atid=397207&group_id=29740&func=browse">
+          Bug&nbsp;Reporting</a><br>
+    </td></tr>
+  </table>
+<?PHP
+}
+
+
+function TinyFooter() {
+   global $HTTP_HOST;
+   $small_self = strtolower($HTTP_HOST);
+?>
+<p><hr>
+<font size=-2><?PHP
+if (strpos($small_self, '.sourceforge.net') !== false) {
+?><a href="http://sourceforge.net"><img
+src="http://sourceforge.net/sflogo.php?group_id=29740" width="88"
+height="31" border="0" alt="SourceForge Logo" align=right></a>
+<?PHP } ?>
+&copy;opyright 2002-2003, Tyler Akins (<?PHP
+HideEmail('fidian', 'tiny.net') ?>)<br>
+All names, trademarks, etc. are property of their respective
+owners.</font>&nbsp;</p>
+<?PHP
+}
+
+
+function StandardFooter() {
+   TinyFooter();
+?>
+</td></tr>
+</table>
+</body>
+</html>
+<?PHP
+}
+
+
+function HideEmail($user, $pass) {
+   $MailLink = '<a href="mailto:' . $user . '@' . $pass . '">' . $user .
+      '@' . $pass . '</a>';
+   
+   $MailLinkNew = '';
+   for ($i = 0; $i < strlen($MailLink); $i ++) {
+      $MailLinkNew .= '%' . bin2hex($MailLink[$i]);
+   }
+   $MailLink = $MailLinkNew;
+   
+   $MailLinkNew = array();
+   while (strlen($MailLink)) {
+      $MailLinkNew[] = substr($MailLink, 0, 25) . '" + "' .
+         substr($MailLink, 25, 25);
+      $MailLink = substr($MailLink, 50);
+   }
+   
+?><SCRIPT LANGUAGE="javascript">
+MaIlMe=new Array();
+<?PHP foreach ($MailLinkNew as $index =>$data) {
+?>MaIlMe[<?PHP echo $index ?>]="<?PHP echo $data ?>";
+<?PHP } ?>
+OutString="";
+for (j=0;j<MaIlMe.length;j++){
+OutString+=MaIlMe[j];
+}document.write(unescape(OutString));
+</SCRIPT><NOSCRIPT>Sorry, you need javascript to see this email address</noscript><?PHP
+}
+
+
+function ShowExample($text) {
+?><table align=center width=80% border=1 cellpadding=5 cellspacing=0
+bgcolor=#DFFFDF>
+<tr>
+<td><font face='courier' size='-1'><?PHP
+
+   $text = trim($text);
+   $text = htmlspecialchars($text);
+   $text = nl2br($text);
+   $text = explode("\n", $text);
+   foreach ($text as $t) {
+      if ($t[0] == ' ') {
+         echo '&nbsp;';
+         $t = substr($t, 1);
+      }
+      $t = str_replace('  ', ' &nbsp;', $t);
+      echo $t;
+   }
+
+?></font></td></tr>
+</table>
+<?PHP
+}
+
+
+function ShowExampleFile($filename) {
+   if (! file_exists($filename)) {
+      ShowExample("$filename doesn't exist!");
+      return;
+   }
+   $fileData = file($filename);
+   $write = 0;
+   $output = '';
+   while (count($fileData)) {
+      $line = array_shift($fileData);
+      if (strpos($line, "END HERE") !== false)
+         $write = 0;
+      if ($write)
+         $output .= $line;
+      if (strpos($line, "START HERE") !== false)
+         $write = 1;
+   }
+   ShowExample($output);
+}

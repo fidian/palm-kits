@@ -1,0 +1,20 @@
+Documentation for Kits
+
+Copyright (C) 2002-2003 - Kit development team
+Licensed under the GNU GPL software license.
+See the docs/LEGAL file for more information
+See http://kits.sourceforge.net/ for more information about the library
+ 
+$Id$
+
+
+
+These are the include files from palmzlib in order to compile programs to
+use the library.  If palmzlib is updated, be sure to update these files as
+well!
+
+ZLib is at http://www.gzip.org/zlib/
+ZLib was written by Greg Roelofs and maintained by Jean-loup Gailly
+Palmzlib is a minimalists patch to ZLib to get it to compile for Palm OS
+Palmzlib is at http://palmzlib.sourceforge.net/
+Both ZLib and Palmzlib are under the ZLib license

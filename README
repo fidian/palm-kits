@@ -1,0 +1,21 @@
+Documentation for Kits
+
+Copyright (C) 2002-2003 - Kit development team
+Licensed under the GNU GPL software license.
+See the docs/LEGAL file for more information
+See http://kits.sourceforge.net/ for more information about the library
+
+$Id$
+
+
+ 
+gunzip		Inflate main source code (inflate.c, inflate.h)
+		CRC32 source code (crc32.c, crc32.h)
+		gunzip (tests inflate code versus a .gz file)
+		just_inflate (tests inflate code versus just deflated stream)
+		Sample data files
+		
+kit		The decompressing program that runs on the Palm
+
+kittest		Testing program to compare Zlib versus the tiny inflate
+		functions here.
