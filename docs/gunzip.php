@@ -17,14 +17,15 @@ StandardHeader('Gunzip');
 &lt;<?PHP HideEmail('albert', 'cs.tut.fi') ?>&gt;.  He distributed it as
 <a href="http://www.cs.tut.fi/~albert/Dev/gunzip/gunzip.c">gunzip.c</a>
 on his <a href="http://www.cs.tut.fi/~albert/Dev/gunzip/">Gzip Decompressor
-for C64</a> page.  This code was heavily modified for (#1) size, and (#2)
-performance.  It is now in Kit as gunzip/inflate.c.  A list of the types of
-changes made to the original code is below.</p>
+for C64</a> page.  This code was heavily modified primarily for size, and
+partially for performance.  It is now in Kit as gunzip/inflate.c.  A list 
+of the types of changes made to the original code is below.</p>
 
 <ul>
 <li>Removed bit reverse table in favor for a bit-shifting technique</li>
 <li>Removed unzip code (we will deal exclusively with gzip streams)</li>
-<li>Will decompress up to 64k in one pass</li>
+<li>Will decompress up to 64k in one pass, which is the limit for Palm OS
+memory chunks (as far as I know)</li>
 <li>Merged multiple inflate functions into one</li>
 <li>Rewrote table generation to be iterative instead of recursive</li>
 <li>Optimized the code to be small</li>
