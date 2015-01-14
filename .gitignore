@@ -1,0 +1,3 @@
+*.o
+gunzip/gunzip
+gunzip/just_inflate
